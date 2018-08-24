@@ -2,24 +2,43 @@ package com.luowei.logwherelibrary
 
 import android.util.Log
 
-fun Any.logd(vararg msg: String) {
-    Log.d(location(javaClass.simpleName), msg.joinToString(":"))
+
+
+private val FILE_NAME = Thread.currentThread().stackTrace[2].fileName
+
+private fun buildMessage(className: String, msg: Array<out String>): Pair<String, String> {
+    fun location(simpleName: String): String {
+        var offset = 0
+        val stackTrace = Thread.currentThread().stackTrace
+        while (stackTrace[offset].fileName != FILE_NAME) offset++
+        while (stackTrace[offset].fileName == FILE_NAME) offset++
+        val stackTraceElement = stackTrace[offset]
+        val clazz = if (simpleName == stackTraceElement.fileName.substringBefore(".")) "" else "$simpleName#"
+        return "(${stackTraceElement.fileName}:${stackTraceElement.lineNumber})[$clazz${stackTraceElement.methodName}]"
+    }
+
+    val location = location(className)
+    val tag = location
+    val txt =  msg.joinToString(":")
+    return Pair(tag, txt)
 }
 
-fun Any.logi(vararg msg: String) {
-    Log.i(location(javaClass.simpleName), msg.joinToString(":"))
+fun Any.logDebug(vararg msg: String) {
+    val (tag, txt) = buildMessage(javaClass.simpleName, msg)
+    Log.d(tag, txt)
 }
 
-fun Any.logw(vararg msg: String) {
-    Log.w(location(javaClass.simpleName), msg.joinToString(":"))
+fun Any.logInfo(vararg msg: String) {
+    val (tag, txt) = buildMessage(javaClass.simpleName, msg)
+    Log.i(tag, txt)
 }
 
-fun Any.loge(vararg msg: String) {
-    Log.e(location(javaClass.simpleName), msg.joinToString(":"))
+fun Any.logWarn(vararg msg: String) {
+    val (tag, txt) = buildMessage(javaClass.simpleName, msg)
+    Log.w(tag, txt)
 }
 
-private fun location(simpleName: String): String {
-    val stackTraceElement = Thread.currentThread().stackTrace[4]
-    val clazz = if (simpleName == stackTraceElement.fileName.substringBefore(".")) "" else "$simpleName#"
-    return "(${stackTraceElement.fileName}:${stackTraceElement.lineNumber})[$clazz${stackTraceElement.methodName}]"
+fun Any.logError(vararg msg: String) {
+    val (tag, txt) = buildMessage(javaClass.simpleName, msg)
+    Log.e(tag, txt)
 }
