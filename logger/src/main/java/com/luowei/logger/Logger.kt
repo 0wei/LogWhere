@@ -1,8 +1,6 @@
-package com.luowei.logwherelibrary
+package com.luowei.logger
 
 import android.util.Log
-
-
 
 private val FILE_NAME = Thread.currentThread().stackTrace[2].fileName
 

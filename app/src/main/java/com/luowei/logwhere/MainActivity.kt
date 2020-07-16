@@ -2,7 +2,7 @@ package com.luowei.logwhere
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.luowei.logwherelibrary.logDebug
+import com.luowei.logger.logDebug
 
 class MainActivity : AppCompatActivity() {
 

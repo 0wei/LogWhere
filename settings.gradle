@@ -1,1 +1,1 @@
-include ':app', ':logwherelibrary'
+include ':app', ':logger'
